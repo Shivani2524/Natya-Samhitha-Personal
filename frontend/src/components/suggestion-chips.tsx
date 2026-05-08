@@ -5,19 +5,22 @@ import { MessageSquareQuote } from "lucide-react";
 
 interface SuggestionChipsProps {
   onSuggestionTap: (label: string) => void;
+  suggestions?: string[];
 }
 
-const suggestions = [
+const defaultSuggestions = [
   "How to express anger in dance?",
   "What is abhinaya?",
   "How is sorrow represented?",
   "Rules of stage design",
 ];
 
-export function SuggestionChips({ onSuggestionTap }: SuggestionChipsProps) {
+export function SuggestionChips({ onSuggestionTap, suggestions }: SuggestionChipsProps) {
+  const displaySuggestions = suggestions && suggestions.length > 0 ? suggestions : defaultSuggestions;
+
   return (
     <div className="flex flex-col items-center gap-3 w-full max-w-lg">
-      {suggestions.map((suggestion, index) => (
+      {displaySuggestions.map((suggestion, index) => (
         <motion.button
           key={suggestion}
           initial={{ opacity: 0, y: 10 }}

@@ -17,6 +17,7 @@ export interface QueryResponse {
   shlokas: Shloka[];
   explanation: string;
   image_refs: string[];
+  related_topics?: string[];
 }
 
 export type ShlokaCategory = "rasa" | "mudra" | "abhinaya" | "general";
