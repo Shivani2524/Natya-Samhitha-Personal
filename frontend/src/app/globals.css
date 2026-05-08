@@ -117,3 +117,63 @@ html {
   background-color: #C9A84C30;
   color: #2D2926;
 }
+
+/* Structured explanation content — renders markdown from the AI response */
+@layer components {
+  .explanation-content {
+    max-width: 100%;
+    line-height: 1.75;
+    color: #44403c;
+  }
+
+  .explanation-content p {
+    margin-bottom: 1rem;
+    line-height: 1.75;
+  }
+
+  .explanation-content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .explanation-content strong {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #b45309;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #fef3c7;
+  }
+
+  .explanation-content p:first-child strong:first-child {
+    margin-top: 0;
+  }
+
+  .explanation-content ul {
+    list-style-type: disc;
+    padding-left: 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .explanation-content ul li {
+    color: #44403c;
+    line-height: 1.7;
+    padding-left: 0.25rem;
+  }
+
+  .explanation-content ul li::marker {
+    color: #d97706;
+  }
+
+  .explanation-content em {
+    color: #92400e;
+    font-style: italic;
+    font-weight: 500;
+  }
+}

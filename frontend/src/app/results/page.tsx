@@ -14,6 +14,7 @@ import { SuggestionChips } from "@/components/suggestion-chips";
 import { useRouter } from "next/navigation";
 import { useAppStore } from "@/lib/store";
 import { submitFeedback } from "@/lib/api";
+import ReactMarkdown from "react-markdown";
 
 function ResultsContent() {
   const searchParams = useSearchParams();
@@ -129,11 +130,8 @@ function ResultsContent() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white/70 backdrop-blur-sm p-5 rounded-2xl border border-amber-200/50 shadow-sm shadow-amber-100/30"
             >
-              <h3 className="text-sm font-bold text-amber-700 uppercase tracking-widest mb-3">
-                Overview
-              </h3>
-              <p className="text-stone-700 leading-relaxed font-medium">
-                {explanation}
+              <div className="explanation-content">
+                <ReactMarkdown>{explanation}</ReactMarkdown>
                 {isLoading && (
                   <motion.span
                     animate={{ opacity: [0, 1, 0] }}
@@ -141,7 +139,7 @@ function ResultsContent() {
                     className="inline-block ml-1 w-2 h-4 bg-amber-400 align-middle rounded-sm"
                   />
                 )}
-              </p>
+              </div>
               
               {/* Feedback Widget at the bottom of the explanation */}
               {!isLoading && data?.query_id && (
