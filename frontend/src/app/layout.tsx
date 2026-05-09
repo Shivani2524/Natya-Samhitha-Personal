@@ -1,42 +1,76 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import {
+  Cormorant_Garamond,
+  Cinzel,
+  Lora,
+  Tiro_Devanagari_Sanskrit,
+  JetBrains_Mono,
+} from "next/font/google";
 import { Providers } from "@/components/providers";
-import { AppShell } from "@/components/app-shell";
 import { OfflineIndicator } from "@/components/offline-indicator";
+import { Sidebar } from "@/components/layout/Sidebar";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-sans",
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-serif",
+const cinzel = Cinzel({
+  variable: "--font-nav",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
+
+const lora = Lora({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const tiroDevanagari = Tiro_Devanagari_Sanskrit({
+  variable: "--font-sanskrit",
+  weight: "400",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Natya Samhitha — Classical Dance Knowledge",
+  title: "Natya Samhitha — नाट्य संहिता | Explore the Wisdom of Natya Shastra",
   description:
-    "A structured knowledge retrieval system for classical dancers, inspired by the Natya Shastra. Search shlokas, mudras, rasas, and abhinaya techniques.",
+    "A premium AI-powered scholarly assistant for exploring the Natya Shastra — the ancient Sanskrit treatise on classical Indian performing arts by Bharata Muni. Search slokas, rasas, mudras, and abhinaya techniques.",
   keywords: [
     "Natya Shastra",
+    "Bharata Muni",
     "classical dance",
+    "Bharatanatyam",
     "mudra",
     "rasa",
+    "navarasas",
     "abhinaya",
-    "bharatanatyam",
-    "shloka",
+    "sloka",
+    "Sanskrit",
+    "tandava",
+    "lasya",
+    "Natya Samhitha",
   ],
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  themeColor: "#FBF8F1",
+  maximumScale: 5,
+  themeColor: "#0F0204",
 };
 
 export default function RootLayout({
@@ -47,15 +81,27 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+      className={`
+        ${cormorantGaramond.variable}
+        ${cinzel.variable}
+        ${lora.variable}
+        ${tiroDevanagari.variable}
+        ${jetbrainsMono.variable}
+        h-full antialiased
+      `}
     >
-      <body className="min-h-full flex flex-col bg-[#FBF8F1]">
+      <body className="min-h-full flex flex-col md:flex-row h-screen overflow-hidden">
         <Providers>
           <OfflineIndicator />
-          <AppShell>{children}</AppShell>
+          <Sidebar />
+          <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+            <main className="flex-1 flex flex-col relative overflow-y-auto">
+              {children}
+            </main>
+          </div>
         </Providers>
       </body>
     </html>
   );
 }
-

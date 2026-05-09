@@ -1,4 +1,4 @@
-import type { Shloka } from "@/types";
+import type { Sloka } from "@/types";
 
 export async function submitFeedback(queryId: string, feedback: 1 | -1): Promise<void> {
   const response = await fetch("/api/v1/feedback", {
@@ -14,11 +14,11 @@ export async function submitFeedback(queryId: string, feedback: 1 | -1): Promise
   }
 }
 
-export async function getShlokaDetails(id: string): Promise<Shloka> {
-  const response = await fetch(`/api/v1/shlokas/${id}`);
+export async function getSlokaDetails(id: string): Promise<Sloka> {
+  const response = await fetch(`/api/v1/slokas/${id}`);
 
   if (!response.ok) {
-    throw new Error("Failed to fetch shloka details");
+    throw new Error("Failed to fetch sloka details");
   }
 
   return response.json();

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { QueryResponse, Shloka } from "@/types";
+import type { QueryResponse, Sloka } from "@/types";
 
 export function useStreamingSearch(query: string) {
   const [data, setData] = useState<QueryResponse | null>(null);
