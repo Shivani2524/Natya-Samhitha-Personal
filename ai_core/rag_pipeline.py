@@ -5,7 +5,7 @@ Coordinates the full Retrieval-Augmented Generation pipeline:
 """
 
 import uuid
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 from ai_core.embeddings import get_query_embedding
 from ai_core.retrieval import search_shlokas
@@ -13,7 +13,7 @@ from ai_core.llm import generate_rag_response
 from ai_core.utils import format_shloka
 
 
-async def process_query(query: str) -> Dict[str, Any]:
+async def process_query(query: str, history: Optional[list] = None) -> Dict[str, Any]:
     """
     Orchestrates the full RAG pipeline for a given query.
 
@@ -32,10 +32,10 @@ async def process_query(query: str) -> Dict[str, Any]:
     query_embedding = get_query_embedding(query)
 
     # 2. Retrieve relevant shlokas
-    retrieved_shlokas = search_shlokas(query_embedding, top_k=3)
+    retrieved_shlokas = search_shlokas(query, query_embedding, top_k=3)
 
     # 3. Generate response using Groq
-    explanation = await generate_rag_response(query, retrieved_shlokas)
+    explanation = await generate_rag_response(query, retrieved_shlokas, history)
 
     # 4. Format the output
     formatted_shlokas = [format_shloka(s) for s in retrieved_shlokas]
@@ -54,5 +54,5 @@ async def process_query_for_stream(query: str) -> List[Dict[str, Any]]:
     The streaming endpoint handles the LLM call itself via stream_explanation().
     """
     query_embedding = get_query_embedding(query)
-    retrieved_shlokas = search_shlokas(query_embedding, top_k=3)
+    retrieved_shlokas = search_shlokas(query, query_embedding, top_k=3)
     return retrieved_shlokas

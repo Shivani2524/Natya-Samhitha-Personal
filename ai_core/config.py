@@ -32,10 +32,14 @@ class AISettings:
     GROQ_BASE_URL: str = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
     GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
+    # Upstash Redis Cache
+    UPSTASH_REDIS_REST_URL: str = os.getenv("UPSTASH_REDIS_REST_URL") or os.getenv("UPSTASH_REDIS_URL") or ""
+    UPSTASH_REDIS_REST_TOKEN: str = os.getenv("UPSTASH_REDIS_REST_TOKEN") or os.getenv("UPSTASH_REDIS_TOKEN") or ""
+
     # Embedding Model
     EMBEDDING_MODE: str = os.getenv("EMBEDDING_MODE", "local")
     EMBEDDING_MODEL_NAME: str = "BAAI/bge-base-en-v1.5"
     EMBEDDING_DIMENSION: int = 768
-
+    RERANKER_MODEL_NAME: str = "BAAI/bge-reranker-base"
 
 ai_settings = AISettings()

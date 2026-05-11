@@ -14,7 +14,7 @@ def get_embedding_model() -> SentenceTransformer:
     """Lazy-load and cache the SentenceTransformer embedding model."""
     global _embedding_model
     if _embedding_model is None:
-        _embedding_model = SentenceTransformer(ai_settings.EMBEDDING_MODEL_NAME)
+        _embedding_model = SentenceTransformer(ai_settings.EMBEDDING_MODEL_NAME, device="cpu")
     return _embedding_model
 
 

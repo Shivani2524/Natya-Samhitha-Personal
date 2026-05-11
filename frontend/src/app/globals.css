@@ -7,10 +7,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --font-serif: var(--font-serif);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-display);
+  --font-serif: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -49,39 +49,89 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ─── Sacred Design Tokens ─── */
 :root {
-  --background: #FBF8F1;
-  --foreground: #2D2926;
-  --card: #FFFFFF;
-  --card-foreground: #2D2926;
-  --popover: #FFFFFF;
-  --popover-foreground: #2D2926;
-  --primary: #C9A84C;
-  --primary-foreground: #FFFFFF;
-  --secondary: #F5F0E6;
-  --secondary-foreground: #2D2926;
-  --muted: #F5F0E6;
-  --muted-foreground: #6B5E50;
-  --accent: #F5F0E6;
-  --accent-foreground: #2D2926;
+  /* Core maroon-gold palette */
+  --maroon-black:   #330814;
+  --maroon-deep:    #4A0F1E;
+  --maroon-rich:    #6B152B;
+  --burgundy:       #8A1B36;
+  --wine:           #A82242;
+
+  /* Rich Accents */
+  --peacock-blue:   #095C73;
+  --emerald-subtle: #1C5441;
+  --sandalwood:     #D4BA9E;
+  --orange-muted:   #CC6D3A;
+
+  /* Gold & Light */
+  --gold-bright:    #F4C146;
+  --gold-royal:     #C8922A;
+  --gold-pale:      #E8D5A3;
+  --bronze-temple:  #8B6914;
+
+  --cream-warm:     #FBF3E4;
+  --cream-light:    #F5ECD8;
+
+  /* Glass effects */
+  --glass-gold:     rgba(200, 146, 42, 0.08);
+  --glass-maroon:   rgba(51, 8, 20, 0.85);
+  --glass-maroon-65: rgba(74, 15, 30, 0.65);
+  --glass-peacock:  rgba(9, 92, 115, 0.15);
+
+  /* Glow effects */
+  --glow-gold:      rgba(244, 193, 70, 0.4);
+  --glow-diya:      rgba(255, 140, 50, 0.25);
+  --glow-diya-center: rgba(255, 160, 60, 0.18);
+  --glow-diya-edge: rgba(200, 146, 42, 0.06);
+
+  /* Spun Gold border gradient stops */
+  --spun-gold-start: rgba(244, 193, 70, 0.5);
+  --spun-gold-mid:   rgba(200, 146, 42, 0.2);
+  --spun-gold-end:   rgba(200, 146, 42, 0);
+
+  /* Shadows */
+  --shadow-warm:    rgba(200, 146, 42, 0.15);
+  --shadow-deep:    rgba(0, 0, 0, 0.5);
+
+  /* Text */
+  --text-primary:   #FBF3E4; /* Changed from dark to cream for bright text */
+  --text-cream:     #FBF3E4;
+  --text-muted-gold: #C8922A;
+
+  /* shadcn/ui tokens */
+  --background: #330814;
+  --foreground: #FBF3E4;
+  --card: #4A0F1E;
+  --card-foreground: #FBF3E4;
+  --popover: #4A0F1E;
+  --popover-foreground: #FBF3E4;
+  --primary: #C8922A;
+  --primary-foreground: #FBF3E4;
+  --secondary: #2B040B;
+  --secondary-foreground: #FBF3E4;
+  --muted: #2B040B;
+  --muted-foreground: #C8922A;
+  --accent: #2B040B;
+  --accent-foreground: #FBF3E4;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #E8DFD0;
-  --input: #E8DFD0;
-  --ring: #C9A84C;
+  --border: #400A13;
+  --input: #400A13;
+  --ring: #C8922A;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.75rem;
-  --sidebar: #F5F0E6;
-  --sidebar-foreground: #2D2926;
-  --sidebar-primary: #C9A84C;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F5F0E6;
-  --sidebar-accent-foreground: #2D2926;
-  --sidebar-border: #E8DFD0;
-  --sidebar-ring: #C9A84C;
+  --sidebar: #330814;
+  --sidebar-foreground: #FBF3E4;
+  --sidebar-primary: #C8922A;
+  --sidebar-primary-foreground: #FBF3E4;
+  --sidebar-accent: #4A0F1E;
+  --sidebar-accent-foreground: #FBF3E4;
+  --sidebar-border: #6B152B;
+  --sidebar-ring: #C8922A;
 }
 
 @layer base {
@@ -89,21 +139,75 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    background: var(--maroon-black);
+    color: var(--text-cream);
+    font-family: var(--font-body), serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
   html {
-    @apply font-sans;
+    font-family: var(--font-body), serif;
   }
 }
 
-/* Smooth scrolling */
+/* ─── Typography utilities ─── */
+.font-display { font-family: var(--font-display), serif; }
+.font-nav     { font-family: var(--font-nav), serif; }
+.font-body    { font-family: var(--font-body), serif; }
+.font-sanskrit{ font-family: var(--font-sanskrit), serif; }
+.font-mono    { font-family: var(--font-mono), monospace; }
+
+/* ─── Glass effects (low-end optimized) ─── */
+.glass-maroon {
+  background: var(--glass-maroon);
+  backdrop-filter: blur(8px) saturate(1.2);
+  -webkit-backdrop-filter: blur(8px) saturate(1.2);
+}
+
+.glass-card {
+  background: rgba(26, 5, 8, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(200, 146, 42, 0.15);
+}
+
+.glass-gold {
+  background: var(--glass-gold);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Premium maroon glass — used sparingly on focal elements */
+.glass-maroon-premium {
+  background: var(--glass-maroon-65);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  border: 1px solid rgba(244, 193, 70, 0.12);
+}
+
+/* ─── Sacred gold gradient text ─── */
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold-royal) 50%, var(--gold-pale) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── Grain overlay ─── */
+.grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Smooth scrolling ─── */
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Hide scrollbar but keep scrolling */
+/* ─── Hide scrollbar ─── */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -112,8 +216,271 @@ html {
   scrollbar-width: none;
 }
 
-/* Selection color */
+/* ─── Selection color ─── */
 ::selection {
-  background-color: #C9A84C30;
-  color: #2D2926;
+  background-color: rgba(200, 146, 42, 0.3);
+  color: var(--cream-warm);
+}
+
+/* ─── Manuscript / Parchment card ─── */
+.manuscript-page {
+  background: linear-gradient(
+    135deg,
+    var(--maroon-rich) 0%,
+    var(--burgundy) 50%,
+    var(--wine) 100%
+  );
+  color: var(--text-cream);
+}
+
+/* ─── AI Response rich-text styles ─── */
+.ai-response strong {
+  display: block;
+  font-family: var(--font-nav), serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-royal);
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.ai-response strong:first-child {
+  margin-top: 0;
+}
+.ai-response ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ai-response li {
+  position: relative;
+  padding-left: 1.25rem;
+  margin-bottom: 0.4rem;
+  line-height: 1.7;
+  color: var(--text-cream);
+  opacity: 1; /* Brightened text */
+}
+.ai-response li::before {
+  content: "✦";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--gold-royal);
+  font-size: 0.65rem;
+}
+.ai-response em.sanskrit-term {
+  font-style: italic;
+  color: var(--gold-bright);
+  text-decoration: underline;
+  text-decoration-color: rgba(200, 146, 42, 0.3);
+  text-underline-offset: 2px;
+}
+.ai-response .sloka-block {
+  display: block;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  border-left: 3px solid var(--gold-royal);
+  background: var(--glass-gold);
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-family: var(--font-sanskrit), serif;
+  font-size: 1.05rem;
+  line-height: 2;
+  color: var(--gold-bright);
+}
+.ai-response .next-suggestion {
+  margin-top: 1rem;
+  cursor: pointer;
+  color: var(--gold-bright);
+  font-style: italic;
+  transition: color 0.2s;
+}
+.ai-response .next-suggestion:hover {
+  color: var(--gold-pale);
+  text-decoration: underline;
+}
+.ai-response p {
+  line-height: 1.75;
+  color: var(--text-cream);
+  opacity: 1; /* Brightened text */
+  margin-bottom: 0.5rem;
+}
+.ai-response .related-topics {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(200, 146, 42, 0.2);
+}
+.ai-response .related-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.ai-response .related-questions .next-suggestion {
+  margin-top: 0;
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(200, 146, 42, 0.06);
+  border: 1px solid rgba(200, 146, 42, 0.15);
+  transition: all 0.2s;
+}
+.ai-response .related-questions .next-suggestion:hover {
+  background: rgba(200, 146, 42, 0.12);
+  border-color: rgba(200, 146, 42, 0.3);
+  transform: translateX(4px);
+}
+
+/* ─── Bob animation for topic chips ─── */
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.animate-bob {
+  animation: bob 3s ease-in-out infinite;
+  animation-delay: var(--bob-delay, 0s);
+}
+
+/* ─── Mandala spin ─── */
+@keyframes mandala-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.animate-mandala-spin {
+  animation: mandala-spin 120s linear infinite;
+}
+.animate-mandala {
+  animation: mandala-spin 120s linear infinite;
+}
+
+/* ─── Floating Sanskrit particles ─── */
+@keyframes float-up {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.25;
+  }
+  90% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(var(--drift-x, 0px)) rotate(var(--drift-r, 0deg));
+    opacity: 0;
+  }
+}
+.animate-float-up {
+  animation: float-up var(--float-duration, 20s) var(--float-delay, 0s) linear infinite;
+}
+
+/* ─── Ink Reveal animation (text blur → sharp) ─── */
+@keyframes ink-reveal {
+  0% {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+.animate-ink-reveal {
+  animation: ink-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--ink-delay, 0s);
+}
+
+/* ─── Spun Gold border (gradient border that catches light) ─── */
+.spun-gold-border {
+  position: relative;
+}
+.spun-gold-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    var(--spun-gold-start) 0%,
+    var(--spun-gold-mid) 40%,
+    var(--spun-gold-end) 70%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ─── Diya glow pseudo (radial gold glow behind elements) ─── */
+.diya-glow {
+  position: relative;
+}
+.diya-glow::after {
+  content: "";
+  position: absolute;
+  inset: -20px;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 80%,
+    var(--glow-diya-center) 0%,
+    var(--glow-diya-edge) 50%,
+    transparent 80%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.diya-glow:hover::after {
+  opacity: 1;
+}
+
+/* ─── Shimmer glint (specular sweep from left to right) ─── */
+@keyframes shimmer-glint {
+  0%   { transform: translateX(-150%); }
+  100% { transform: translateX(250%); }
+}
+.shimmer-glint {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-glint::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(244, 193, 70, 0.25) 50%,
+    transparent 100%
+  );
+  animation: shimmer-glint 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ─── Metallic gold hover sweep for buttons ─── */
+.gold-sweep {
+  background-size: 200% 100%;
+  background-image: linear-gradient(
+    90deg,
+    var(--gold-royal) 0%,
+    var(--gold-bright) 25%,
+    var(--gold-pale) 50%,
+    var(--gold-bright) 75%,
+    var(--gold-royal) 100%
+  );
+  background-position: 0% 0%;
+  transition: background-position 0.5s ease;
+}
+.gold-sweep:hover {
+  background-position: 100% 0%;
 }

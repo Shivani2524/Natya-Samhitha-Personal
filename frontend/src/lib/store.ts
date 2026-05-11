@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { RecentSearch, FilterState, VoiceState } from "@/types";
+import type { RecentSearch, FilterState, VoiceState, ChatMessage } from "@/types";
+
+export interface Session {
+  id: string;
+  title: string;
+  updatedAt: number;
+  messages: ChatMessage[];
+}
 
 interface AppState {
   // Recent searches
@@ -29,6 +36,16 @@ interface AppState {
   // Sound
   soundEnabled: boolean;
   toggleSound: () => void;
+
+  // Sessions (for sidebar history)
+  activeSessionId: string | null;
+  setActiveSessionId: (id: string | null) => void;
+  sessions: Record<string, Session>;
+  createNewSession: (id: string, initialQuery: string) => void;
+  addSession: (id: string, title: string) => void;
+  removeSession: (id: string) => void;
+  addMessageToSession: (sessionId: string, message: ChatMessage) => void;
+  updateMessageInSession: (sessionId: string, messageId: string, updates: Partial<ChatMessage>) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -76,12 +93,70 @@ export const useAppStore = create<AppState>()(
       // Sound
       soundEnabled: true,
       toggleSound: () => set((state) => ({ soundEnabled: !state.soundEnabled })),
+
+      // Sessions
+      activeSessionId: null,
+      setActiveSessionId: (id) => set({ activeSessionId: id }),
+      sessions: {},
+      createNewSession: (id: string, initialQuery: string) =>
+        set((state) => ({
+          activeSessionId: id,
+          sessions: {
+            ...state.sessions,
+            [id]: { id, title: initialQuery, updatedAt: Date.now(), messages: [] },
+          },
+        })),
+      addSession: (id: string, title: string) =>
+        set((state) => ({
+          sessions: {
+            ...state.sessions,
+            [id]: { id, title, updatedAt: Date.now(), messages: [] },
+          },
+        })),
+      removeSession: (id: string) =>
+        set((state) => {
+          const { [id]: _, ...rest } = state.sessions;
+          return { sessions: rest };
+        }),
+      addMessageToSession: (sessionId, message) =>
+        set((state) => {
+          const session = state.sessions[sessionId];
+          if (!session) return state;
+          return {
+            sessions: {
+              ...state.sessions,
+              [sessionId]: {
+                ...session,
+                updatedAt: Date.now(),
+                messages: [...session.messages, message],
+              },
+            },
+          };
+        }),
+      updateMessageInSession: (sessionId, messageId, updates) =>
+        set((state) => {
+          const session = state.sessions[sessionId];
+          if (!session) return state;
+          return {
+            sessions: {
+              ...state.sessions,
+              [sessionId]: {
+                ...session,
+                updatedAt: Date.now(),
+                messages: session.messages.map((m) =>
+                  m.id === messageId ? { ...m, ...updates } : m
+                ),
+              },
+            },
+          };
+        }),
     }),
     {
       name: "natya-samhitha-store",
       partialize: (state) => ({
         recentSearches: state.recentSearches,
         soundEnabled: state.soundEnabled,
+        sessions: state.sessions,
       }),
     }
   )

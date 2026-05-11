@@ -40,3 +40,15 @@ export interface RecentSearch {
 }
 
 export type VoiceState = "idle" | "recording" | "processing";
+
+/** Alias — teammate's components use `Sloka`, backend uses `Shloka` */
+export type Sloka = Shloka;
+
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  isLoading?: boolean;
+  slokas?: Shloka[];
+  queryId?: string;
+}

@@ -74,7 +74,7 @@ def generate_pdf(output_path: str):
     for chapter_data in SAMPLE_SHLOKAS:
         pdf.add_page()
         pdf.set_font("Helvetica", "B", 16)
-        pdf.cell(0, 12, chapter_data["chapter"], new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(0, 12, str(chapter_data["chapter"]), new_x="LMARGIN", new_y="NEXT")
         pdf.ln(5)
 
         for i, verse in enumerate(chapter_data["verses"], 1):

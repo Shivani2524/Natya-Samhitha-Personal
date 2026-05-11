@@ -104,7 +104,10 @@ def store_in_database(chunks: list[dict], document_title: str, source_path: str)
                 """,
                 (document_title, "pdf", source_path)
             )
-            doc_id = cur.fetchone()["id"]
+            row = cur.fetchone()
+            if row is None:
+                raise ValueError("Database insert did not return an ID")
+            doc_id = row[0]
             print(f"Created document record: {doc_id}")
 
             # Insert each shloka with its embedding

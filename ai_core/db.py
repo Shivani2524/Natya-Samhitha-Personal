@@ -17,12 +17,13 @@ def get_db_connection():
     conn = psycopg2.connect(ai_settings.DATABASE_URL, cursor_factory=RealDictCursor)
     return conn
 
+from typing import Optional
 
-def execute_query(query: str, params: tuple = None, fetch: bool = True):
+def execute_query(query: str, params: Optional[tuple] = None, fetch: bool = True):
     """Execute a SQL query and optionally fetch results."""
     conn = get_db_connection()
     try:
-        with conn.cursor() as cur:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(query, params)
             if fetch:
                 results = cur.fetchall()

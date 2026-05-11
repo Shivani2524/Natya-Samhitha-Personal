@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Add the project root to sys.path to allow importing ai_core
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import query, shlokas, feedback

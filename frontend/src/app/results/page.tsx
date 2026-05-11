@@ -1,234 +1,197 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { BookX, HelpCircle, ThumbsUp, ThumbsDown } from "lucide-react";
-import { Header } from "@/components/header";
-import { SearchBar } from "@/components/search-bar";
-import { ResultCard } from "@/components/result-card";
-import { ResultSkeleton } from "@/components/result-skeleton";
-import { useStreamingSearch } from "@/hooks/use-streaming-search";
-import { useSound } from "@/hooks/use-sound";
-import { SuggestionChips } from "@/components/suggestion-chips";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { ArrowLeft, User } from "lucide-react";
+import Link from "next/link";
+import { SearchBar } from "@/components/search/SearchBar";
+import { ResultCard } from "@/components/results/ResultCard";
+import { RasaFeedback } from "@/components/results/RasaFeedback";
+import { GhungrooSeparator } from "@/components/ornaments/GhungrooSeparator";
+import { useChat } from "@/hooks/use-chat";
 import { useAppStore } from "@/lib/store";
 import { submitFeedback } from "@/lib/api";
+import { parseAIResponse } from "@/lib/parseResult";
+import type { ChatMessage } from "@/types";
 
-function ResultsContent() {
-  const searchParams = useSearchParams();
-  const query = searchParams.get("q") || "";
-  const { data, isLoading, isError, streamingExplanation } = useStreamingSearch(query);
-  const { play: playChime } = useSound();
-  const hasPlayedRef = useRef(false);
-  const router = useRouter();
-  const addRecentSearch = useAppStore((s) => s.addRecentSearch);
-  const [feedbackGiven, setFeedbackGiven] = useState<1 | -1 | null>(null);
-
-  // Determine what to display based on streamed or fetched data
-  const explanation = data?.explanation || streamingExplanation;
-  const results = data?.shlokas || [];
-  const hasResults = results.length > 0;
-
-  // Play chime once when results load successfully
-  useEffect(() => {
-    if (!isLoading && !isError && hasResults && !hasPlayedRef.current) {
-      hasPlayedRef.current = true;
-      playChime();
-    }
-    if (isLoading) {
-      hasPlayedRef.current = false;
-      setFeedbackGiven(null);
-    }
-  }, [isLoading, isError, hasResults, playChime]);
-
-  const handleRelatedTopicTap = (topic: string) => {
-    addRecentSearch(topic);
-    router.push(`/results?q=${encodeURIComponent(topic)}`);
-  };
-
-  const handleFeedback = async (value: 1 | -1) => {
-    if (!data?.query_id || feedbackGiven !== null) return;
-    setFeedbackGiven(value);
-    try {
-      await submitFeedback(data.query_id, value);
-    } catch (err) {
-      console.error("Failed to submit feedback", err);
-      setFeedbackGiven(null); // revert on error
-    }
-  };
+function ChatMessageBubble({ msg }: { msg: ChatMessage }) {
+  if (msg.role === "user") {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex justify-end mb-6"
+      >
+        <div
+          className="
+            px-5 py-3 rounded-2xl rounded-tr-sm
+            border border-[var(--gold-royal)]/50
+            bg-[var(--glass-gold)]
+            font-body text-[0.95rem]
+            text-[var(--gold-bright)]
+            shadow-lg shadow-[var(--shadow-warm)]
+            max-w-[85%] sm:max-w-[70%]
+            flex gap-3 items-start
+          "
+        >
+          <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
-    <div className="relative flex-1 flex flex-col min-h-screen overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex justify-start mb-8 w-full"
+    >
+      <div className="relative w-full max-w-4xl group">
+        <div
+          className="
+            w-full
+            glass-card rounded-2xl p-6 sm:p-8
+            border border-[var(--gold-royal)]/20
+            shadow-xl shadow-[var(--shadow-warm)]
+          "
+        >
+          {/* 1. Source Shlokas on TOP */}
+          {msg.slokas && msg.slokas.length > 0 && (
+            <div className="mb-8 space-y-6">
+              <h3 className="font-nav text-[0.65rem] tracking-[0.15em] uppercase text-[var(--gold-royal)]/70">
+                Source Shlokas
+              </h3>
+              {msg.slokas.map((shloka, index) => (
+                <div key={shloka.id || index}>
+                  {index > 0 && <GhungrooSeparator className="mb-6" />}
+                  <ResultCard sloka={shloka} index={index} />
+                </div>
+              ))}
+              <GhungrooSeparator className="mt-8 opacity-50" />
+            </div>
+          )}
+
+          {/* 2. AI Explanation */}
+          <div>
+            <h3 className="font-nav text-[0.65rem] tracking-[0.15em] uppercase text-[var(--gold-royal)]/70 mb-4">
+              Explanation
+            </h3>
+            <div
+              className="ai-response font-body text-[0.95rem] leading-relaxed text-[var(--text-primary)]"
+              dangerouslySetInnerHTML={{ __html: parseAIResponse(msg.content) }}
+            />
+            {msg.isLoading && (
+              <motion.span
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="inline-block mt-2 w-2 h-5 bg-[var(--gold-bright)] align-middle rounded-sm"
+              />
+            )}
+          </div>
+
+          {/* 3. Feedback at the bottom */}
+          {!msg.isLoading && msg.queryId && (
+            <div className="mt-8 pt-6 border-t border-[var(--gold-royal)]/15 flex justify-end">
+              <RasaFeedback
+                queryId={msg.queryId}
+                onSubmit={(qid, fb) => submitFeedback(qid, fb as 1 | -1)}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ChatUI() {
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get("sessionId");
+  const initialQuery = searchParams.get("q");
+  const router = useRouter();
+
+  const { messages, sendMessage, isTyping } = useChat();
+  const { setActiveSessionId, sessions } = useAppStore();
+  const hasSentInitialRef = useRef(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Set active session from URL
+  useEffect(() => {
+    if (sessionId) {
+      setActiveSessionId(sessionId);
+    }
+  }, [sessionId, setActiveSessionId]);
+
+  // Handle initial query if coming from home page
+  useEffect(() => {
+    if (sessionId && initialQuery && !hasSentInitialRef.current) {
+      hasSentInitialRef.current = true;
+      const session = useAppStore.getState().sessions[sessionId];
+      
+      // Only send if the session is brand new and has no messages yet
+      if (session && session.messages.length === 0) {
+        sendMessage(initialQuery, sessionId);
+      }
+      
+      // Clean up the URL to remove the 'q' parameter so it doesn't re-trigger on refresh
+      window.history.replaceState({}, "", `/results?sessionId=${sessionId}`);
+    }
+  }, [sessionId, initialQuery, sendMessage]);
+
+  // Auto-scroll to bottom when messages change or typing
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length, isTyping]);
+
+  return (
+    <div className="relative flex-1 flex flex-col min-h-screen">
       {/* Nataraja background watermark */}
       <div
-        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+        className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0"
         aria-hidden="true"
       >
         <img
           src="/nataraja-bg.png"
           alt=""
-          className="w-[708px] h-[708px] object-contain opacity-[0.06]"
+          className="w-[708px] h-[708px] object-contain opacity-[0.04]"
           draggable={false}
         />
       </div>
 
-      <Header showBack />
-
-      {/* Compact search + active query */}
-      <div className="px-4 pt-4 pb-2 space-y-4">
-        <SearchBar defaultValue={query} compact />
-
-        {/* Active query label */}
-        {query && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col gap-1 px-1"
-          >
-            <p className="text-xl font-serif text-stone-800 tracking-tight leading-snug">
-              &ldquo;{query}&rdquo;
+      {/* Chat Messages */}
+      <div className="relative z-10 flex-1 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full pt-8 pb-4 overflow-y-auto">
+        {messages.length === 0 && !isTyping && (
+          <div className="flex justify-center items-center h-full opacity-50">
+            <p className="font-nav text-sm tracking-widest text-[var(--gold-royal)]">
+              Waiting for inquiry...
             </p>
-            <p className="text-xs text-stone-400 font-medium tracking-wide uppercase">
-              Based on Natya Shastra
-            </p>
-          </motion.div>
+          </div>
         )}
+
+        {messages.map((msg) => (
+          <ChatMessageBubble key={msg.id} msg={msg} />
+        ))}
+
+        <div ref={bottomRef} className="h-24" />
       </div>
 
-      {/* Results area */}
-      <div className="flex-1 px-4 py-4 space-y-6 overflow-y-auto">
-        {isLoading && !explanation && (
-          <div className="space-y-4">
-            <p className="text-sm text-stone-500 italic px-1">Searching relevant references...</p>
-            <ResultSkeleton />
+      <div className="absolute bottom-6 left-0 right-0 z-50 pointer-events-none flex justify-center w-full px-4">
+        <div className="w-full max-w-sm pointer-events-auto">
+          <div className="bg-[var(--maroon-black)] border border-[var(--gold-royal)]/20 p-1.5 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+            <SearchBar
+              compact
+              autoFocus
+              onVoiceResult={(query) => {
+                if (query.trim() && sessionId && !isTyping) {
+                  sendMessage(query, sessionId);
+                }
+              }}
+            />
           </div>
-        )}
-
-        {isError && (
-          <EmptyState
-            icon={<BookX className="w-10 h-10 text-stone-300" />}
-            title="Something went wrong"
-            message="Please try your search again."
-          />
-        )}
-
-        {!isLoading && !isError && !hasResults && !explanation && (
-          <EmptyState
-            icon={<HelpCircle className="w-12 h-12 text-stone-300 mb-2" />}
-            title="No relevant reference found in Natya Shastra."
-            message="Try rephrasing your question."
-          />
-        )}
-
-        {/* Streaming / Overarching Explanation */}
-        <AnimatePresence>
-          {explanation && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white/70 backdrop-blur-sm p-5 rounded-2xl border border-amber-200/50 shadow-sm shadow-amber-100/30"
-            >
-              <h3 className="text-sm font-bold text-amber-700 uppercase tracking-widest mb-3">
-                Overview
-              </h3>
-              <p className="text-stone-700 leading-relaxed font-medium">
-                {explanation}
-                {isLoading && (
-                  <motion.span
-                    animate={{ opacity: [0, 1, 0] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                    className="inline-block ml-1 w-2 h-4 bg-amber-400 align-middle rounded-sm"
-                  />
-                )}
-              </p>
-              
-              {/* Feedback Widget at the bottom of the explanation */}
-              {!isLoading && data?.query_id && (
-                <div className="flex items-center justify-end gap-2 mt-4 pt-3 border-t border-amber-100/50">
-                  <span className="text-xs text-stone-400 mr-auto font-medium">Was this answer helpful?</span>
-                  <button
-                    type="button"
-                    onClick={() => handleFeedback(1)}
-                    disabled={feedbackGiven !== null}
-                    className={`
-                      p-2 rounded-lg transition-all duration-200
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400
-                      ${feedbackGiven === 1 ? "bg-green-100 text-green-700" : "text-stone-400 hover:bg-stone-100 hover:text-stone-600 disabled:opacity-50"}
-                    `}
-                    aria-label="Helpful"
-                  >
-                    <ThumbsUp className="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleFeedback(-1)}
-                    disabled={feedbackGiven !== null}
-                    className={`
-                      p-2 rounded-lg transition-all duration-200
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400
-                      ${feedbackGiven === -1 ? "bg-red-100 text-red-600" : "text-stone-400 hover:bg-stone-100 hover:text-stone-600 disabled:opacity-50"}
-                    `}
-                    aria-label="Not helpful"
-                  >
-                    <ThumbsDown className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Shlokas List */}
-        {hasResults && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="space-y-4"
-          >
-            <h3 className="text-sm font-bold text-stone-400 uppercase tracking-widest pl-1">
-              Source Shlokas
-            </h3>
-            {results.map((shloka, index) => (
-              <ResultCard key={shloka.id} shloka={shloka} index={index} />
-            ))}
-          </motion.div>
-        )}
-
-        {/* Related Topics / Questions */}
-        {!isLoading && (
-          <div className="mt-12 mb-8 flex flex-col items-center">
-            <p className="text-xs text-stone-400 font-medium tracking-wider uppercase mb-4">
-              Related Topics
-            </p>
-            <SuggestionChips onSuggestionTap={handleRelatedTopicTap} />
-          </div>
-        )}
+        </div>
       </div>
     </div>
-  );
-}
-
-function EmptyState({
-  icon,
-  title,
-  message,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  message: string;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="flex flex-col items-center justify-center py-20 text-center px-4"
-    >
-      <div className="mb-4">{icon}</div>
-      <h2 className="font-serif text-lg text-stone-700 mb-2 leading-tight">{title}</h2>
-      <p className="text-sm text-stone-500">{message}</p>
-    </motion.div>
   );
 }
 
@@ -236,15 +199,14 @@ export default function ResultsPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex-1 flex flex-col min-h-screen">
-          <Header showBack />
-          <div className="px-4 pt-4">
-            <ResultSkeleton />
-          </div>
+        <div className="flex-1 flex flex-col min-h-screen items-center justify-center">
+          <p className="font-nav text-sm tracking-widest text-[var(--gold-royal)] animate-pulse">
+            Loading Sacred Space...
+          </p>
         </div>
       }
     >
-      <ResultsContent />
+      <ChatUI />
     </Suspense>
   );
 }
