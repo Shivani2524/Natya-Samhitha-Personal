@@ -1,0 +1,22 @@
+# ============================================
+# Backend Dependencies
+# ============================================
+# These are the Python packages required by the backend module.
+# Install with: pip install -r backend/requirements.txt
+
+# Web Framework
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+
+# Data Validation
+pydantic>=2.0.0
+
+# Database
+psycopg2-binary>=2.9.0
+
+# Environment Variables
+python-dotenv>=1.0.0
+
+# AI Core (installed from the sibling module)
+# When running together, ai_core must be importable from the project root.
+# The ai_core module and its dependencies (see ai_core/requirements.txt) must also be installed.
