@@ -25,7 +25,6 @@ class QueryResponse(BaseModel):
     shlokas: List[ShlokaResponse]
     explanation: str
     image_refs: Optional[List[str]] = []
-    related_topics: Optional[List[str]] = []
 
 
 class FeedbackRequest(BaseModel):

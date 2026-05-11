@@ -1,7 +1,7 @@
-export interface Sloka {
+export interface Shloka {
   id: string;
   sanskrit?: string;
-  sloka_iast?: string;
+  shloka_iast?: string;
   transliteration?: string;
   translation?: string;
   explanation?: string;
@@ -14,16 +14,16 @@ export interface Sloka {
 
 export interface QueryResponse {
   query_id: string;
-  slokas: Sloka[];
+  shlokas: Shloka[];
   explanation: string;
   image_refs: string[];
 }
 
-export type SlokaCategory = "rasa" | "mudra" | "abhinaya" | "general";
+export type ShlokaCategory = "rasa" | "mudra" | "abhinaya" | "general";
 
 export interface SearchResult {
   query: string;
-  results: Sloka[];
+  results: Shloka[];
   totalCount: number;
 }
 
@@ -33,24 +33,10 @@ export interface FilterState {
   chapter: boolean;
 }
 
-export interface ChatMessage {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  slokas?: Sloka[];
-  isLoading?: boolean;
-  queryId?: string;
-}
-
-export interface ChatSession {
-  id: string;
-  title: string;
-  messages: ChatMessage[];
-  updatedAt: number;
-}
-
-export interface SavedSloka extends Sloka {
-  savedAt: number;
+export interface RecentSearch {
+  query: string;
+  timestamp: number;
+  category?: ShlokaCategory;
 }
 
 export type VoiceState = "idle" | "recording" | "processing";

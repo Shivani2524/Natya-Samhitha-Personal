@@ -2,61 +2,55 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MandalaBackground } from "@/components/hero/MandalaBackground";
 
 export default function NotFound() {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
-      <MandalaBackground />
-
+    <main className="flex-1 flex flex-col items-center justify-center px-6 py-20 text-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative z-10 text-center max-w-md"
+        transition={{ duration: 0.5 }}
       >
-        {/* Sanskrit numeral */}
-        <span
-          className="font-sanskrit text-8xl text-[var(--gold-bright)]/20 block mb-4"
+        <svg
+          width="64"
+          height="64"
+          viewBox="0 0 64 64"
+          fill="none"
+          className="mx-auto mb-6 text-amber-300"
           aria-hidden="true"
         >
-          ४०४
-        </span>
+          <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="32" cy="28" r="4" fill="currentColor" opacity="0.4" />
+          <path
+            d="M32 32v8M24 48l8-8 8 8"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
 
-        <h1 className="font-display text-3xl text-[var(--gold-bright)] italic mb-3">
-          Path Not Found
+        <h1 className="font-serif text-2xl font-bold text-stone-700 mb-2">
+          Page Not Found
         </h1>
-
-        <p className="font-body text-sm text-[var(--text-cream)]/50 mb-8 leading-relaxed">
-          This chapter of the Natya Shastra has not yet been illuminated.
-          <br />
-          Return to the beginning and seek anew.
+        <p className="text-sm text-stone-400 mb-8">
+          This path does not lead to any shloka.
         </p>
 
         <Link
           href="/"
           className="
             inline-flex items-center gap-2
-            px-6 py-3 rounded-xl
-            font-nav text-xs tracking-[0.12em]
-            text-[var(--cream-warm)]
+            px-6 py-3 rounded-full
+            bg-gradient-to-r from-amber-500 to-amber-600
+            text-white text-sm font-medium
+            shadow-md shadow-amber-200/50
+            hover:shadow-lg hover:shadow-amber-200/60
             transition-all duration-300
-            hover:scale-[1.02] hover:shadow-lg hover:shadow-[var(--glow-gold)]
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold-bright)]
           "
-          style={{ background: "var(--gradient-gold)" }}
         >
           Return Home
         </Link>
       </motion.div>
-
-      {/* Sanskrit sloka watermark */}
-      <p
-        className="absolute bottom-8 font-sanskrit text-xs text-[var(--text-cream)]/8 text-center"
-        aria-hidden="true"
-      >
-        नाट्यं भिन्नरुचेर्जनस्य बहुधाप्येकं समाराधनम्
-      </p>
-    </div>
+    </main>
   );
 }

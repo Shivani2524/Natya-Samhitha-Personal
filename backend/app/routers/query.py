@@ -16,8 +16,7 @@ async def submit_query(request: QueryRequest):
         query_id=result["query_id"],
         shlokas=result["shlokas"],
         explanation=result["explanation"],
-        image_refs=result["image_refs"],
-        related_topics=result.get("related_topics", [])
+        image_refs=result["image_refs"]
     )
 
 
