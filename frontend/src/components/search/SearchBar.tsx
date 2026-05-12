@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Search, Mic, Loader2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { Search, Mic, Loader2, Send } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "@/lib/store";
 import { useSound } from "@/hooks/use-sound";
 import { useVoice } from "@/hooks/use-voice";
@@ -23,6 +23,7 @@ interface SearchBarProps {
   compact?: boolean;
   autoFocus?: boolean;
   onVoiceResult?: (transcript: string) => void;
+  onSubmitQuery?: (query: string) => void;
 }
 
 /**
@@ -39,6 +40,7 @@ export function SearchBar({
   compact = false,
   autoFocus = false,
   onVoiceResult,
+  onSubmitQuery,
 }: SearchBarProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -59,16 +61,25 @@ export function SearchBar({
     [compact]
   );
 
-  const { register, handleSubmit } = useForm<SearchForm>({
+  const { register, handleSubmit, reset, watch } = useForm<SearchForm>({
     resolver: zodResolver(searchSchema),
     defaultValues: { query: defaultValue },
   });
+
+  const queryValue = watch("query");
 
   const { play: playChime } = useSound();
 
   const onSubmit = (data: SearchForm) => {
     playChime();
-    router.push(`/results?q=${encodeURIComponent(data.query)}`);
+    if (onSubmitQuery) {
+      onSubmitQuery(data.query);
+      if (compact) {
+        reset({ query: "" });
+      }
+    } else {
+      router.push(`/results?q=${encodeURIComponent(data.query)}`);
+    }
   };
 
   const handleVoiceResult = useCallback(
@@ -108,10 +119,11 @@ export function SearchBar({
           transition-all duration-500
           ${
             compact
-              ? "px-3 py-2 glass-card"
-              : `px-4 py-2.5 bg-[var(--cream-warm)]
-                 spun-gold-border
-                 shadow-lg shadow-[var(--shadow-warm)]
+              ? "px-3 py-2 glass-card rounded-2xl"
+              : `px-4 py-2.5 bg-white/5 backdrop-blur-xl rounded-full
+                 border border-[var(--gold-royal)]
+                 shadow-xl shadow-black/20
+                 focus-within:border-[var(--gold-bright)]
                  focus-within:shadow-[0_0_0_4px_var(--glow-gold),0_0_32px_var(--glow-diya)]`
           }
         `}
@@ -171,40 +183,58 @@ export function SearchBar({
         />
 
         {/* Voice mic button */}
-        <button
-          type="button"
-          onClick={isRecording ? stopRecording : startRecording}
-          disabled={isProcessing}
-          aria-label={isRecording ? "Stop voice recording" : "Start voice search"}
-          className={`
-            relative flex-shrink-0 flex items-center justify-center z-10
-            rounded-full transition-all duration-300
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold-royal)]
-            ${compact ? "w-8 h-8 ml-1" : "w-10 h-10 ml-2"}
-            ${
-              isRecording
-                ? "bg-red-600 text-white shadow-lg shadow-red-500/30"
-                : compact
-                  ? "text-[var(--gold-royal)]/60 hover:text-[var(--gold-bright)] hover:bg-[var(--glass-gold)]"
-                  : "bg-[var(--glass-gold)] text-[var(--bronze-temple)] hover:bg-[var(--gold-royal)]/20 hover:text-[var(--gold-royal)]"
-            }
-            ${isProcessing ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
-          `}
-        >
-          {/* Pulse ring when recording */}
-          {isRecording && (
-            <span className="absolute inset-0 rounded-full bg-red-400/30 animate-ping" />
-          )}
-          {isProcessing ? (
-            <Loader2
-              className={`animate-spin ${compact ? "w-3.5 h-3.5" : "w-4.5 h-4.5"}`}
-            />
-          ) : (
-            <Mic
-              className={`relative z-10 ${compact ? "w-3.5 h-3.5" : "w-4.5 h-4.5"}`}
-            />
-          )}
-        </button>
+        {!queryValue?.trim() ? (
+          <button
+            type="button"
+            onClick={isRecording ? stopRecording : startRecording}
+            disabled={isProcessing}
+            aria-label={isRecording ? "Stop voice recording" : "Start voice search"}
+            className={`
+              relative flex-shrink-0 flex items-center justify-center z-10
+              rounded-full transition-all duration-300
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold-royal)]
+              ${compact ? "w-8 h-8 ml-1" : "w-10 h-10 ml-2"}
+              ${
+                isRecording
+                  ? "bg-red-600 text-white shadow-lg shadow-red-500/30"
+                  : compact
+                    ? "text-[var(--gold-royal)]/60 hover:text-[var(--gold-bright)] hover:bg-[var(--glass-gold)]"
+                    : "bg-[var(--saffron)] text-[var(--maroon-black)] hover:bg-[var(--gold-bright)] shadow-md shadow-[var(--saffron)]/20"
+              }
+              ${isProcessing ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
+            `}
+          >
+            {/* Pulse ring when recording */}
+            {isRecording && (
+              <span className="absolute inset-0 rounded-full bg-red-400/30 animate-ping" />
+            )}
+            {isProcessing ? (
+              <Loader2
+                className={`animate-spin ${compact ? "w-3.5 h-3.5" : "w-4.5 h-4.5"}`}
+              />
+            ) : (
+              <Mic
+                className={`relative z-10 ${compact ? "w-3.5 h-3.5" : "w-4.5 h-4.5"}`}
+              />
+            )}
+          </button>
+        ) : (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            type="submit"
+            aria-label="Submit search"
+            className={`
+              relative flex-shrink-0 flex items-center justify-center z-10
+              rounded-full transition-all duration-300
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold-royal)]
+              ${compact ? "w-8 h-8 ml-1" : "w-10 h-10 ml-2"}
+              bg-[var(--saffron)] text-[var(--maroon-black)] hover:bg-[var(--gold-bright)] shadow-md shadow-[var(--saffron)]/20
+            `}
+          >
+            <Send className={`relative z-10 ${compact ? "w-3.5 h-3.5" : "w-4 h-4"} ml-0.5`} />
+          </motion.button>
+        )}
       </div>
 
       {/* Recording status text */}

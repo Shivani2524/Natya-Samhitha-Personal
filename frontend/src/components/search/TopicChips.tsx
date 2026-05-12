@@ -42,14 +42,15 @@ export function TopicChips({ onSuggestionTap }: TopicChipsProps) {
           onClick={() => onSuggestionTap(topic)}
           className="
             px-4 py-2 sm:px-5 sm:py-2.5 rounded-full
-            bg-[var(--maroon-deep)]/80 backdrop-blur-sm
-            border border-[var(--gold-bright)]/40
-            font-body text-[0.7rem] sm:text-[0.8rem] font-semibold tracking-wide
-            text-[var(--gold-bright)]
+            bg-white/5 backdrop-blur-md
+            border border-[var(--gold-royal)]/50
+            font-body text-[0.75rem] sm:text-[0.8rem] font-medium tracking-wide
+            text-[var(--gold-pale)]
             transition-all duration-300
-            hover:bg-[var(--gold-bright)] hover:text-[var(--maroon-deep)]
+            hover:bg-[var(--gold-bright)] hover:text-[var(--maroon-black)]
+            hover:border-[var(--gold-bright)]
             hover:-translate-y-[3px] hover:scale-105
-            hover:shadow-[0_8px_24px_rgba(244,193,70,0.35)]
+            hover:shadow-[0_8px_24px_rgba(244,193,70,0.2)]
             focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold-bright)]
             cursor-pointer
             animate-bob

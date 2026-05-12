@@ -20,7 +20,7 @@ export default function HomePage() {
     <HeroSection
       chips={<TopicChips onSuggestionTap={handleSearchNavigation} />}
     >
-      <SearchBar autoFocus onVoiceResult={handleSearchNavigation} />
+      <SearchBar autoFocus onVoiceResult={handleSearchNavigation} onSubmitQuery={handleSearchNavigation} />
     </HeroSection>
   );
 }

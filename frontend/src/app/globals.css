@@ -52,17 +52,19 @@
 /* ─── Sacred Design Tokens ─── */
 :root {
   /* Core maroon-gold palette */
-  --maroon-black:   #330814;
-  --maroon-deep:    #4A0F1E;
+  --maroon-black:   #2D040A;
+  --maroon-deep:    #4D0819;
   --maroon-rich:    #6B152B;
   --burgundy:       #8A1B36;
   --wine:           #A82242;
+  --crimson-vibrant: #720917;
 
   /* Rich Accents */
   --peacock-blue:   #095C73;
   --emerald-subtle: #1C5441;
   --sandalwood:     #D4BA9E;
   --orange-muted:   #CC6D3A;
+  --saffron:        #FF9933;
 
   /* Gold & Light */
   --gold-bright:    #F4C146;
@@ -95,9 +97,13 @@
   --shadow-deep:    rgba(0, 0, 0, 0.5);
 
   /* Text */
-  --text-primary:   #FBF3E4; /* Changed from dark to cream for bright text */
+  --text-primary:   #FBF3E4;
   --text-cream:     #FBF3E4;
   --text-muted-gold: #C8922A;
+
+  /* Typography */
+  --font-decorative: 'Cinzel Decorative', cursive;
+  --font-tagline: 'Cormorant Garamond', serif;
 
   /* shadcn/ui tokens */
   --background: #330814;
@@ -152,6 +158,8 @@
 
 /* ─── Typography utilities ─── */
 .font-display { font-family: var(--font-display), serif; }
+.font-decorative { font-family: var(--font-decorative), cursive; }
+.font-tagline   { font-family: var(--font-tagline), serif; }
 .font-nav     { font-family: var(--font-nav), serif; }
 .font-body    { font-family: var(--font-body), serif; }
 .font-sanskrit{ font-family: var(--font-sanskrit), serif; }

@@ -1,0 +1,30 @@
+{
+  "features": [
+    {
+      "id": "feat-000-example",
+      "name": "Example feature — reference template",
+      "status": "complete",
+      "depends_on": [],
+      "rollback_ref": null,
+      "created_at": "",
+      "completed_at": "",
+      "edits": [
+        {
+          "id": "edit-001",
+          "description": "Example edit — reference template",
+          "status": "complete"
+        }
+      ]
+    },
+    {
+      "id": "feat-001-fathom-ingestion",
+      "name": "Fathom API ingestion route",
+      "status": "in-progress",
+      "depends_on": [],
+      "rollback_ref": null,
+      "created_at": "2026-04-02T12:56:53Z",
+      "completed_at": null,
+      "edits": []
+    }
+  ]
+}

@@ -23,7 +23,7 @@ interface HeroSectionProps {
  */
 export function HeroSection({ children, chips }: HeroSectionProps) {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-4 py-16 sm:px-6 sm:py-24 overflow-hidden">
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-4 py-16 sm:px-6 sm:py-24 overflow-hidden bg-gradient-to-b from-[var(--maroon-black)] via-[var(--crimson-vibrant)] to-[var(--maroon-black)]">
       {/* Layer 1: Grain texture */}
       <div className="grain-overlay absolute inset-0" />
 
@@ -57,41 +57,16 @@ export function HeroSection({ children, chips }: HeroSectionProps) {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center text-center max-w-xl sm:max-w-2xl md:max-w-4xl lg:max-w-5xl w-full">
-        {/* OM symbol */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="mb-6"
-        >
-          <motion.span
-            className="font-sanskrit text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[var(--gold-bright)]"
-            animate={{ opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            style={{ textShadow: "0 0 30px var(--glow-gold)" }}
-          >
-            ॐ
-          </motion.span>
-        </motion.div>
+      <div className="relative z-10 flex flex-col items-center text-center max-w-xl sm:max-w-2xl md:max-w-4xl lg:max-w-5xl w-full pt-12 md:pt-16">
 
-        {/* Sanskrit title */}
-        <motion.h1
-          variants={heroTitle}
-          initial="hidden"
-          animate="visible"
-          className="font-sanskrit text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[var(--gold-bright)] mb-2 leading-tight"
-          style={{ textShadow: "0 0 40px rgba(244, 193, 70, 0.3)" }}
-        >
-          नाट्य संहिता
-        </motion.h1>
+
 
         {/* English title */}
         <motion.h2
           variants={heroTitle}
           initial="hidden"
           animate="visible"
-          className="font-nav text-base sm:text-lg md:text-xl lg:text-2xl tracking-[0.2em] text-gradient-gold mb-4"
+          className="font-decorative text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.02em] text-[var(--gold-bright)] mb-6 drop-shadow-[0_0_20px_rgba(244,193,70,0.3)]"
         >
           NATYA SAMHITHA
         </motion.h2>
@@ -101,7 +76,7 @@ export function HeroSection({ children, chips }: HeroSectionProps) {
           variants={heroSubtitle}
           initial="hidden"
           animate="visible"
-          className="font-body text-xs sm:text-sm md:text-base text-[var(--text-cream)]/60 mb-8 sm:mb-10 italic"
+          className="font-tagline text-lg sm:text-xl md:text-2xl text-[var(--gold-pale)] mb-10 sm:mb-12 italic"
         >
           &ldquo;Explore the Wisdom of Natya Shastra Through AI&rdquo;
         </motion.p>

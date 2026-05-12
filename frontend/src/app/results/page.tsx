@@ -9,6 +9,7 @@ import { SearchBar } from "@/components/search/SearchBar";
 import { ResultCard } from "@/components/results/ResultCard";
 import { RasaFeedback } from "@/components/results/RasaFeedback";
 import { GhungrooSeparator } from "@/components/ornaments/GhungrooSeparator";
+import { MandalaBackground } from "@/components/hero/MandalaBackground";
 import { useChat } from "@/hooks/use-chat";
 import { useAppStore } from "@/lib/store";
 import { submitFeedback } from "@/lib/api";
@@ -47,7 +48,7 @@ function ChatMessageBubble({ msg }: { msg: ChatMessage }) {
       animate={{ opacity: 1, y: 0 }}
       className="flex justify-start mb-8 w-full"
     >
-      <div className="relative w-full max-w-4xl group">
+      <div className="relative w-full group">
         <div
           className="
             w-full
@@ -145,7 +146,13 @@ function ChatUI() {
   }, [messages.length, isTyping]);
 
   return (
-    <div className="relative flex-1 flex flex-col min-h-screen">
+    <div className="relative flex-1 flex flex-col min-h-screen bg-gradient-to-b from-[var(--maroon-black)] via-[var(--crimson-vibrant)] to-[var(--maroon-black)]">
+      {/* Layer 1: Grain texture */}
+      <div className="grain-overlay absolute inset-0 z-0 pointer-events-none" />
+
+      {/* Layer 2: Mandala */}
+      <MandalaBackground />
+
       {/* Nataraja background watermark */}
       <div
         className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-0"
@@ -160,7 +167,18 @@ function ChatUI() {
       </div>
 
       {/* Chat Messages */}
-      <div className="relative z-10 flex-1 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full pt-8 pb-4 overflow-y-auto">
+      <div className="relative z-10 flex-1 pl-8 pr-4 sm:pl-16 sm:pr-8 lg:pl-24 lg:pr-12 w-full pt-8 pb-4 overflow-y-auto">
+        {/* Back Button */}
+        <div className="mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-[var(--gold-royal)]/70 hover:text-[var(--gold-bright)] transition-colors group"
+          >
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+            <span className="font-nav text-[0.65rem] tracking-[0.15em] uppercase">Back</span>
+          </Link>
+        </div>
+
         {messages.length === 0 && !isTyping && (
           <div className="flex justify-center items-center h-full opacity-50">
             <p className="font-nav text-sm tracking-widest text-[var(--gold-royal)]">
@@ -176,13 +194,18 @@ function ChatUI() {
         <div ref={bottomRef} className="h-24" />
       </div>
 
-      <div className="absolute bottom-6 left-0 right-0 z-50 pointer-events-none flex justify-center w-full px-4">
-        <div className="w-full max-w-sm pointer-events-auto">
-          <div className="bg-[var(--maroon-black)] border border-[var(--gold-royal)]/20 p-1.5 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+      <div className="absolute bottom-6 left-0 right-0 z-50 pointer-events-none flex justify-center w-full pl-8 pr-4 sm:pl-16 sm:pr-8 lg:pl-24 lg:pr-12">
+        <div className="w-full max-w-lg pointer-events-auto">
+          <div className="bg-white/5 backdrop-blur-xl border border-[var(--gold-royal)]/20 p-1 rounded-full shadow-2xl">
             <SearchBar
               compact
               autoFocus
               onVoiceResult={(query) => {
+                if (query.trim() && sessionId && !isTyping) {
+                  sendMessage(query, sessionId);
+                }
+              }}
+              onSubmitQuery={(query) => {
                 if (query.trim() && sessionId && !isTyping) {
                   sendMessage(query, sessionId);
                 }

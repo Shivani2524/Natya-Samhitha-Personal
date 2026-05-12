@@ -61,7 +61,7 @@ export function Sidebar() {
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         className={`
           fixed md:relative h-screen z-[60] md:z-40 shrink-0
-          glass-maroon overflow-hidden border-r border-[var(--gold-royal)]/20
+          bg-[var(--maroon-black)] overflow-hidden border-r border-[var(--gold-royal)]/20
           shadow-2xl md:shadow-none
         `}
       >
@@ -74,9 +74,7 @@ export function Sidebar() {
               aria-label="Natya Samhitha Home"
               onClick={() => typeof window !== "undefined" && window.innerWidth < 768 && setSidebarOpen(false)}
             >
-              <span className="font-sanskrit text-2xl text-[var(--gold-bright)] group-hover:text-[var(--gold-pale)] transition-colors whitespace-nowrap">
-                नाट्य संहिता
-              </span>
+
               <span className="font-nav text-[0.6rem] tracking-[0.2em] text-gradient-gold whitespace-nowrap uppercase">
                 Natya Samhitha
               </span>
@@ -94,11 +92,12 @@ export function Sidebar() {
                   if (typeof window !== "undefined" && window.innerWidth < 768) setSidebarOpen(false);
                 }}
                 className="
-                  flex items-center justify-center gap-3 w-full px-4 py-3.5 rounded-xl
+                  flex items-center justify-center gap-3 w-full px-4 py-3.5 rounded-full
                   font-nav text-[0.7rem] tracking-[0.2em] whitespace-nowrap uppercase font-bold
-                  gold-sweep text-[var(--maroon-black)]
+                  border border-[var(--gold-royal)] text-[var(--gold-bright)]
+                  hover:bg-[var(--gold-royal)]/10 hover:border-[var(--gold-bright)]
                   hover:scale-[1.02] active:scale-95
-                  transition-all duration-300 shadow-lg shadow-[var(--shadow-warm)]
+                  transition-all duration-300 shadow-lg shadow-black/20
                 "
               >
                 <Plus className="w-4 h-4 shrink-0" />

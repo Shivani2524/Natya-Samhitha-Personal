@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import {
   Cormorant_Garamond,
   Cinzel,
+  Cinzel_Decorative,
   Lora,
   Tiro_Devanagari_Sanskrit,
   JetBrains_Mono,
@@ -13,7 +14,7 @@ import { AIOrb } from "@/components/layout/AIOrb";
 import "./globals.css";
 
 const cormorantGaramond = Cormorant_Garamond({
-  variable: "--font-display",
+  variable: "--font-tagline",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
@@ -23,6 +24,13 @@ const cinzel = Cinzel({
   variable: "--font-nav",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
+
+const cinzelDecorative = Cinzel_Decorative({
+  variable: "--font-decorative",
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
   display: "swap",
 });
 
@@ -47,7 +55,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Natya Samhitha — नाट्य संहिता | Explore the Wisdom of Natya Shastra",
+  title: "Natya Samhitha | Explore the Wisdom of Natya Shastra",
   description:
     "A premium AI-powered scholarly assistant for exploring the Natya Shastra — the ancient Sanskrit treatise on classical Indian performing arts by Bharata Muni. Search slokas, rasas, mudras, and abhinaya techniques.",
   keywords: [
@@ -86,6 +94,7 @@ export default function RootLayout({
       className={`
         ${cormorantGaramond.variable}
         ${cinzel.variable}
+        ${cinzelDecorative.variable}
         ${lora.variable}
         ${tiroDevanagari.variable}
         ${jetbrainsMono.variable}
